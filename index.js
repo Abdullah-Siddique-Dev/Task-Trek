@@ -22,7 +22,14 @@ const todosArr = [
     }
 ];
 
-app.use(express.json())
+app.use(express.json());
+    app.use(express.urlencoded({ extended: true }));
+
+app.use((req, res, next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+});
+
 
 app.get("/", (req, res) => {
     res.send("TaskTrek!");
@@ -45,6 +52,13 @@ app.get("/todos/:id/", (req, res) => {
 
 app.post('/todos',(req,res)=>{
     const todo=req.body;
+
+
+    if (!todo) {
+        return res.status(400).json({
+            message: "Request body is required!"
+        });
+    }
 
     if(!todo.task){
 
