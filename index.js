@@ -25,6 +25,10 @@ const todosArr = [
 app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
+    // app.use(express.static("public"))               make file accessable publicaly
+    // app.use("/avatar",express.static("public") );   make file accessable under avatar folder
+      app.use("/profile", express.static("assets"));
+
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next();
