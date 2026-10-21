@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
-// const morgan= require("morgan");
-// const helmet= require("helmet");
+const morgan = require("morgan");
+const helmet = require("helmet");
 
 
 const todosArr = [
@@ -25,18 +25,18 @@ const todosArr = [
     }
 ];
 
-// app.use(helmet())
+app.use(helmet())
 app.use(express.json());
     app.use(express.urlencoded({ extended: true }));
 
     // app.use(express.static("public"))               make file accessable publicaly
-    app.use("/avatar",express.static("public") );  
-    //  make file accessable under avatar folder
+    app.use("/avatar",express.static("Public") );  
+    //  make file accessable under avatar folder - access via /avatar/ktor.jpg
       app.use("/profile", express.static("assets"));
 
       console.log(`Process Env ${process.env.NODE_Env}`);   
 
-      // app.use(morgan("dev"))
+      app.use(morgan("dev"))
 
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.url}`);
