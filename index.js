@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
@@ -25,19 +26,22 @@ const todosArr = [
     }
 ];
 
-app.use(helmet())
+app.use(helmet());
 app.use(express.json());
-    app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
 
-    // app.use(express.static("public"))               make file accessable publicaly
-    app.use("/avatar",express.static("Public") );  
-    //  make file accessable under avatar folder - access via /avatar/ktor.jpg
-      app.use("/profile", express.static("assets"));
+// Static file middleware
+app.use("/avatar", express.static("Public"));  // Access via /avatar/ktor.jpg
+app.use("/profile", express.static("assets")); // Access via /profile/profile.jpg
 
-      console.log(`Process Env ${process.env.NODE_Env}`);   
+// Morgan logging middleware (only in development)
+console.log(`Current Environment: ${process.env.NODE_ENV}`);
+if (process.env.NODE_ENV === "development") {
+    app.use(morgan("dev"));
+    console.log("Morgan logging enabled");
+}
 
-      app.use(morgan("dev"))
-
+// Custom logging middleware
 app.use((req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next();
