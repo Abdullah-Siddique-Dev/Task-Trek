@@ -1,9 +1,16 @@
-require('dotenv').config();
+
+const envFile = process.env.NODE_ENV=== 'production' ? '.env.production' : 'env.development'
+
+require('dotenv').config(
+    path: envFile
+);
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const helmet = require("helmet");
 
+
+console.log(process.env.KEY);
 
 const todosArr = [
     {
