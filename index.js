@@ -1,37 +1,15 @@
+const envFile = process.env.NODE_ENV === 'production' ? '.env.production' : '.env.development';
 
-const envFile = process.env.NODE_ENV=== 'production' ? '.env.production' : 'env.development'
-
-require('dotenv').config(
+require('dotenv').config({
     path: envFile
-);
+});
 const express = require("express");
 const app = express();
 const morgan = require("morgan");
 const helmet = require("helmet");
-
+const todosArr = require("./todos");
 
 console.log(process.env.KEY);
-
-const todosArr = [
-    {
-        id: 1,
-        task: "create all project 1",
-        tags: ["nodejs", "javascript"],
-        status: "todo"
-    },
-    {
-        id: 2,
-        task: "create all project 1",
-        tags: ["nodejs"],
-        status: "todo"
-    },
-    {
-        id: 3,
-        task: "create all project 1",
-        tags: ["done"],
-        status: "todo"
-    }
-];
 
 app.use(helmet());
 app.use(express.json());
