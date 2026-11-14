@@ -1,3 +1,18 @@
+const express = require("express");
+const router=express.Router();
+
+const Todo=require('../Models/todos')
+
+const newTodo=new Todo({
+    task:todosArr.task,
+    status:todo.status,
+    tags:todo.tags
+})
+ 
+res.status(201).json(newTodo);
+
+
+
 const todosArr = [
     {
         id: 1,

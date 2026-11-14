@@ -9,6 +9,7 @@ const app = express();
 const morgan = require("morgan");
 const helmet = require("helmet");
 const todosArr = require("./todos");
+const Todo = require("./Models/todo");  // Import Todo model
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGO_URI)
@@ -70,8 +71,8 @@ app.get("/todos/:id/", (req, res) => {
     // other way to show the status and also ascending and sorted data 
 });
 
-app.post('/todos',(req,res)=>{
-    const todo=req.body;
+app.post('/todos', async (req, res) => {
+    const todo = req.body;
 
     if (!todo) {
         return res.status(400).json({
@@ -79,24 +80,28 @@ app.post('/todos',(req,res)=>{
         });
     }
 
-    if(!todo.task){
-       return res.status(400).json({message:"Task is required!"})
+    if (!todo.task) {
+       return res.status(400).json({message: "Task is required!"})
     }
-    if(!todo.tags){
-       return res.status(400).json({message:"Tags are required!"})
+    if (!todo.tags) {
+       return res.status(400).json({message: "Tags are required!"})
     }
-    if(!todo.status){
-       return res.status(400).json({message:"Status is required!"})
+    if (!todo.status) {
+       return res.status(400).json({message: "Status is required!"})
     }
     
-    const newTodo={
-        id: todosArr[todosArr.length - 1].id + 1,
-        task: todo.task,    // ✅ FIXED - was: task:todo
-        tags: todo.tags,
-        status: todo.status
-    }
-    todosArr.push(newTodo);
-    res.status(201).json(newTodo);
+    // Create new todo using MongoDB
+    const newTodo = new Todo({
+        task: todo.task,
+        status: todo.status,
+        tags: todo.tags
+    });
+    
+    // Save to database
+    const storedTodo = await newTodo.save();
+    
+    // Return stored data
+    res.status(201).json(storedTodo);
 });
 
 app.put('/todos/:id', (req, res) => {

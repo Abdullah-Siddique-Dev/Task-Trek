@@ -1,0 +1,42 @@
+[
+    {
+        "task": "Complete MongoDB integration",
+        "tags": ["mongodb", "backend", "database"],
+        "status": "in-progress"
+    },
+    {
+        "task": "Build RESTful API endpoints",
+        "tags": ["api", "express", "nodejs"],
+        "status": "todo"
+    },
+    {
+        "task": "Add authentication middleware",
+        "tags": ["security", "jwt", "authentication"],
+        "status": "todo"
+    },
+    {
+        "task": "Write unit tests",
+        "tags": ["testing", "jest", "quality"],
+        "status": "todo"
+    },
+    {
+        "task": "Deploy to production",
+        "tags": ["deployment", "devops", "cloud"],
+        "status": "todo"
+    },
+    {
+        "task": "Create documentation",
+        "tags": ["docs", "readme", "api-docs"],
+        "status": "todo"
+    },
+    {
+        "task": "Setup error handling",
+        "tags": ["error-handling", "middleware", "logging"],
+        "status": "done"
+    },
+    {
+        "task": "Implement pagination",
+        "tags": ["api", "optimization", "performance"],
+        "status": "todo"
+    }
+]
