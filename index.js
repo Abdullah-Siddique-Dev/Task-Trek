@@ -4,10 +4,28 @@ require('dotenv').config({
     path: envFile
 });
 const express = require("express");
+const mongoose = require("mongoose");
 const app = express();
 const morgan = require("morgan");
 const helmet = require("helmet");
 const todosArr = require("./todos");
+
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI)
+    .then(() => console.log('✅ MongoDB Connected Successfully'))
+    .catch(err => {
+        console.error('❌ MongoDB Connection Error:', err.message);
+        process.exit(1);
+    });
+
+console.log(process.env.KEY);ose')
+
+
+mongoose.connect("").then(()=>{
+    console.log("mongodb connected")
+}).catch((err)=>{
+    console.log("failed",err)
+});
 
 console.log(process.env.KEY);
 
@@ -55,7 +73,6 @@ app.get("/todos/:id/", (req, res) => {
 app.post('/todos',(req,res)=>{
     const todo=req.body;
 
-
     if (!todo) {
         return res.status(400).json({
             message: "Request body is required!"
@@ -63,26 +80,23 @@ app.post('/todos',(req,res)=>{
     }
 
     if(!todo.task){
-
-       return  res.status(400).json({message:"Task is required!"})
+       return res.status(400).json({message:"Task is required!"})
     }
     if(!todo.tags){
-
-       return  res.status(400).json({message:"tags is required!"})
+       return res.status(400).json({message:"Tags are required!"})
     }
     if(!todo.status){
-
-       return  res.status(400).json({message:"status is required!"})
+       return res.status(400).json({message:"Status is required!"})
     }
+    
     const newTodo={
-        id:todosArr[todosArr.length - 1].id +  1,
-        task:todo,
-        tags:todo.tags,
-        status:todo.status
+        id: todosArr[todosArr.length - 1].id + 1,
+        task: todo.task,    // ✅ FIXED - was: task:todo
+        tags: todo.tags,
+        status: todo.status
     }
-    todosArr.push(newTodo)
+    todosArr.push(newTodo);
     res.status(201).json(newTodo);
-
 });
 
 app.put('/todos/:id', (req, res) => {
@@ -115,7 +129,7 @@ app.put('/todos/:id', (req, res) => {
 });
 
 app.delete("/todos/:id", (req, res)=>{
-    const id =parseInt(req.params.id);
+    const id = parseInt(req.params.id);
 
     const todoIndex = todosArr.findIndex((t) => t.id === id);
 
@@ -125,9 +139,9 @@ app.delete("/todos/:id", (req, res)=>{
         });
     }
 
-    todosArr.splice(todoIndex, 2)
-    res.json({message:"Todo deleted Successfully"})
-})
+    todosArr.splice(todoIndex, 1);  // ✅ FIXED - was: splice(todoIndex, 2)
+    res.json({message: "Todo deleted successfully"});
+});
 
 const PORT = process.env.PORT || 3000;
 
