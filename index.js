@@ -56,8 +56,19 @@ app.get("/", (req, res) => {
     res.send("TaskTrek!");
 });
 
-app.get("/todos", (req, res) => {
-    res.json(todosArr);
+app.get("/todos", async (req, res) => {
+    try {
+        // Fetch all todos from MongoDB
+        const todos = await Todo.find();
+        
+        // Return todos array
+        res.json(todos);
+    } catch (error) {
+        res.status(500).json({
+            message: "Error fetching todos",
+            error: error.message
+        });
+    }
 });
 
 app.get("/todos/:id/", (req, res) => {
