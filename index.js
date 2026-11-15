@@ -115,34 +115,64 @@ app.post('/todos', async (req, res) => {
     res.status(201).json(storedTodo);
 });
 
-app.put('/todos/:id', (req, res) => {
+app.put('/todos/:id', async (req, res) => {
+    try {
+        const id = req.params.id;
+        const { task, tags, status } = req.body;
 
-    const id = parseInt(req.params.id);
+        // Build update object with only provided fields
+        const updateData = {};
+        if (task) updateData.task = task;
+        if (tags) updateData.tags = tags;
+        if (status) updateData.status = status;
 
-    const { task, tags, status } = req.body;
+        // Find and update the todo
+        const updatedTodo = await Todo.findByIdAndUpdate(
+            id,
+            updateData,
+            { new: true, runValidators: true }
+        );
 
-    const todoIndex = todosArr.findIndex((t) => t.id === id);
+        // If todo not found
+        if (!updatedTodo) {
+            return res.status(404).json({
+                message: "Todo not found!"
+            });
+        }
 
-    if (todoIndex === -1) {
-        return res.status(404).json({
-            message: "Todo not found!"
+        // Return updated todo
+        res.json(updatedTodo);
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating todo",
+            error: error.message
         });
     }
-
-    if (task) {
-        todosArr[todoIndex].task = task;
-    }
-
-    if (tags) {
-        todosArr[todoIndex].tags = tags;
-    }
-
-    if (status) {
-        todosArr[todoIndex].status = status;
-    }
-
-    res.json(todosArr[todoIndex]);
 });
+
+app.put('/todos/update/status', async (req, res) => {
+    try {
+        // Update all todos with status "doing" to "done"
+        const result = await Todo.updateMany(
+            { status: "doing" },           // Filter: Find todos with status "doing"
+            { status: "done" }             // Update: Change status to "done"
+        );
+
+        res.json({
+            message: "Todos updated successfully",
+            matchedCount: result.matchedCount,     // How many found
+            modifiedCount: result.modifiedCount    // How many actually updated
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Error updating todos",
+            error: error.message
+        });
+    }
+});
+
 
 app.delete("/todos/:id", (req, res)=>{
     const id = parseInt(req.params.id);
@@ -165,6 +195,32 @@ app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}....`);
 });
 
+app.delete("/todos/:id", async (req, res) => {
+    try {
+        const id = req.params.id;
+
+        // Find and delete the todo
+        const deletedTodo = await Todo.findByIdAndDelete(id);
+
+        // If todo not found
+        if (!deletedTodo) {
+            return res.status(404).json({
+                message: "Todo not found!"
+            });
+        }
+
+        // Return success message
+        res.json({
+            message: "Todo deleted successfully!"
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: "Error deleting todo",
+            error: error.message
+        });
+    }
+});
 
 
 // if we get any error in any middle ware then 
